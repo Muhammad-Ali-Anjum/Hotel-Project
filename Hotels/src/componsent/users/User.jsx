@@ -28,7 +28,7 @@ const User = () => {
             accessorFn: (row) => `${row.firstName} ${row.lastName}`,
             id: 'name',
             header: 'Name',
-            size: 250,
+            size: 200,
             Cell: ({ renderedCellValue, row }) => (
               <Box
                 sx={{
@@ -58,12 +58,12 @@ const User = () => {
             enableClickToCopy: true,
             filterVariant: 'autocomplete',
             header: 'Email',
-            size: 350,
+            size: 300,
           },
           {
             accessorKey: 'isAdmin',
             header: 'Is Admin',
-            size: 200,
+            size: 50,
             Cell: ({ cell }) => (
               <Box
                 component="span"
