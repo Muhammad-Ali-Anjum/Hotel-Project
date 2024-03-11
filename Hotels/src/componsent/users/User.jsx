@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useMemo } from 'react';
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
-import { Box, ListItemIcon, MenuItem, Button, Modal, TextField, Typography, IconButton } from '@mui/material';
+import { Box, ListItemIcon, MenuItem, Button, Modal, TextField, Typography, IconButton, RadioGroup, Radio, FormControlLabel } from '@mui/material';
 import { Edit, Delete, Close } from '@mui/icons-material';
-
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 import { data } from './usersData';
 
 const User = () => {
@@ -62,7 +63,7 @@ const User = () => {
           {
             accessorKey: 'isAdmin',
             header: 'Is Admin',
-            size: 100,
+            size: 200,
             Cell: ({ cell }) => (
               <Box
                 component="span"
@@ -166,6 +167,22 @@ const User = () => {
     ],
   });
 
+  const initialValues = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    avatar: '',
+    isAdmin: 'no',
+  };
+
+  const validationSchema = Yup.object().shape({
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Last Name is required'),
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    avatar: Yup.string().url('Invalid URL').required('Avatar URL is required'),
+    isAdmin: Yup.string().required('Please select Admin status'),
+  });
+
   return (
     <Box position="relative">
       <Button
@@ -191,16 +208,80 @@ const User = () => {
           <Typography variant="h5" component="div" gutterBottom>
             Create User
           </Typography>
-          <form>
-            <TextField id="firstName" label="First Name" variant="outlined" fullWidth margin="normal" />
-            <TextField id="lastName" label="Last Name" variant="outlined" fullWidth margin="normal" />
-            <TextField id="email" label="Email" variant="outlined" fullWidth margin="normal" />
-            <TextField id="avatar" label="Avatar" variant="outlined" fullWidth margin="normal" />
-            <TextField id="isAdmin" label="Is Admin" variant="outlined" fullWidth margin="normal" />
-            <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-              Create User
-            </Button>
-          </form>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={(values, { resetForm }) => {
+              console.log(values);
+              resetForm();
+              handleClose();
+            }}
+          >
+            {({ errors, touched }) => (
+              <Form>
+                <Field
+                  name="firstName"
+                  as={TextField}
+                  label="First Name"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  error={touched.firstName && !!errors.firstName}
+                  helperText={touched.firstName && errors.firstName}
+                />
+                <Field
+                  name="lastName"
+                  as={TextField}
+                  label="Last Name"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  error={touched.lastName && !!errors.lastName}
+                  helperText={touched.lastName && errors.lastName}
+                />
+                <Field
+                  name="email"
+                  as={TextField}
+                  label="Email"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  error={touched.email && !!errors.email}
+                  helperText={touched.email && errors.email}
+                />
+                <Field
+                  name="avatar"
+                  as={TextField}
+                  label="Avatar"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  error={touched.avatar && !!errors.avatar}
+                  helperText={touched.avatar && errors.avatar}
+                />
+
+                  <Typography >IsAdmin</Typography>
+                <Field name="isAdmin">
+                  {({ field }) => (
+                   <RadioGroup
+                      {...field}
+                      row
+                     
+                      aria-label="isAdmin"
+                      name="isAdmin"
+                      error={touched.isAdmin && !!errors.isAdmin}
+                    >
+                      <FormControlLabel value="yes" control={<Radio />} label="Yes" />
+                      <FormControlLabel value="no" control={<Radio />} label="No" />
+                    </RadioGroup>
+                  )}
+                </Field>
+                <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+                  Create User
+                </Button>
+              </Form>
+            )}
+          </Formik>
         </Box>
       </Modal>
       <MaterialReactTable table={table} />
