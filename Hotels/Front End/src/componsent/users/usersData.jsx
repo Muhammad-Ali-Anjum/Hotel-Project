@@ -1,4 +1,4 @@
-import { faker } from '@faker-js/faker';
+  import { faker } from '@faker-js/faker';
 
 export const data = [...Array(30)].map((_, index) => ({
   id: index + 1,
