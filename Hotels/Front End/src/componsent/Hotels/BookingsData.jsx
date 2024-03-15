@@ -20,6 +20,6 @@ export const data = [
         CheckOut: "2024-03-27",
         Price: 300,
       },
-    // Add more data objects as needed
+    
   ];
   
