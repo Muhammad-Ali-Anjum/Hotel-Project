@@ -46,11 +46,7 @@ const Booking = () => {
               </Box>
             ),
           },
-          {
-            accessorKey: 'Type',
-            header: 'Type',
-            size: 200,
-          },
+        
           {
             accessorKey: 'AC_NonAC',
             header: 'AC/Non AC',
@@ -166,7 +162,6 @@ const Booking = () => {
 
   const initialValues = {
     img: '',
-    Type: '',
     AC_NonAC: '',
     Meal: '',
     BedCapacity: '',
@@ -176,7 +171,6 @@ const Booking = () => {
 
   const validationSchema = Yup.object().shape({
     img: Yup.string().url('Invalid URL').required('Image URL is required'),
-    Type: Yup.string().required('Type is required'),
     AC_NonAC: Yup.string().required('AC/Non AC is required'),
     Meal: Yup.string().required('Meal is required'),
     BedCapacity: Yup.number().required('Bed Capacity is required'),
@@ -230,16 +224,7 @@ const Booking = () => {
                   error={touched.img && !!errors.img}
                   helperText={touched.img && errors.img}
                 />
-                <Field
-                  name="Type"
-                  as={TextField}
-                  label="Type"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.Type && !!errors.Type}
-                  helperText={touched.Type && errors.Type}
-                />
+               
                 <Field
                   name="AC_NonAC"
                   as={TextField}
