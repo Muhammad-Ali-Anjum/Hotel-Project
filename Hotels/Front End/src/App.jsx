@@ -23,8 +23,11 @@ import PersonIcon from '@mui/icons-material/Person';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Hotels from './componsent/Hotels/Hotels';
 import Room from './componsent/Rooms/Room';
+import BookIcon from '@mui/icons-material/Book';
 import Booking from './componsent/Booking/Booking';
 import User from './componsent/users/User';
+import BedIcon from '@mui/icons-material/Bed';
+import HomeWorkIcon from '@mui/icons-material/HomeWork';
 
 
 // Import your components here
@@ -142,10 +145,11 @@ export default function MiniDrawer() {
           <List>
             {/* Define routes and navigate to respective components */}
             {[
+              
               { title: 'Dashboard', icon: <AddHomeIcon />, path: '/dashboard' },
-              { title: 'Hotels', icon: <HotelIcon />, path: '/hotels' },
-              { title: 'Room', icon: <AddShoppingCartIcon />, path: '/room' },
-              { title: 'Booking', icon: <AddShoppingCartIcon />, path: '/booking' },
+              { title: 'Hotels', icon: <HomeWorkIcon />, path: '/hotels' },
+              { title: 'Room', icon: <BedIcon />, path: '/room' },
+              { title: 'Booking', icon: <BookIcon />, path: '/booking' },
               { title: 'User', icon: <PersonIcon />, path: '/user' },
             ].map((item) => (
               <ListItem key={item.title} disablePadding sx={{ display: 'block' }}>
@@ -164,7 +168,7 @@ export default function MiniDrawer() {
           <DrawerHeader />
           <Routes>
             {/* Define routes for components */}
-            <Route path="/dashboard" exact   element={<h1>Dashbaord</h1>} />
+            <Route path="/"  exact   element={<h1>Dashbaord</h1>} />
             <Route path="/hotels" element={<Hotels/>} />
             <Route path="/room" element={<Room/>} />
             <Route path="/booking" element={<Booking/>} />
