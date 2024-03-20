@@ -2,6 +2,7 @@
   "name": "back-end",
   "version": "1.0.0",
   "description": "Backend for hotels management system",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js"

@@ -1,7 +1,9 @@
-import cookieParser from "cookie-parser";
-
-
-import uploadRoute from 'cookie-parser'
+import express  from "express";
+import authRoute from "./Router/AuthRout.js"
+import dotenv from "dotenv"
+import cors from "cors";
+import mongoose from "mongoose"
+import cookieParser from "cookie-parser"
 
 const app = express()
 
@@ -45,6 +47,7 @@ app.use((err, req, res, next) => {
     stack: err.stack,
   });
 });
+app.use("/api/auth",authRoute)
 app.listen(port, () => {
 DatabaseConnection();
   console.log(`Server Listen on port ${port}`);
