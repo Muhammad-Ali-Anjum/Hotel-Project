@@ -15,14 +15,14 @@ app.use(cookieParser());
 app.use(express.json());
 
 
-const DatabaseConnection = async () => {
+  const DatabaseConnection = async () => {
     try {
-      await mongoose.connect(process.env.MONGODB_URI);
-      console.log("Connected to mongoDB.");
-    } catch {
-      console.log("Connection Error");
+        await mongoose.connect(process.env.MONGODB_ATLAS);
+        console.log("Connected to mongoDB.");
+    } catch  {
+        console.log("Connection Error");
     }
-  };
+};
   
   mongoose.connection.on("disconnected", () => {
     console.log("MongoDB Disconnected!");
