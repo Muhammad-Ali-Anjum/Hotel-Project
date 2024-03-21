@@ -3,24 +3,21 @@ const UserSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
+      // required: true,
       // unique: true,
     },
     email: {
       type: String,
-      required: true,
+      // required: true,
       // unique: true,
     },
     password: {
       type: String,
-      required: true,
+      // required: true,
     },
-    isAdmin: {
-      type: Boolean, 
-      default: true,
-    },
+  
   },
-  { timestamps: true }
+
 );
 
 export default mongoose.model("User", UserSchema);

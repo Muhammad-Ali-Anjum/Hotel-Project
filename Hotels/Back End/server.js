@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import cors from "cors";
 import mongoose from "mongoose"
 import cookieParser from "cookie-parser"
+import { login ,register} from "./Controller/auth.js";
 
 const app = express()
 
@@ -14,10 +15,13 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 
+app.post("/api/auth",authRoute)
+app.post("/api/auth/register",register)
+app.post("/api/auth/login",login)
 
   const DatabaseConnection = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_ATLAS);
+        await mongoose.connect(process.env.MONGODB_URI);
         console.log("Connected to mongoDB.");
     } catch  {
         console.log("Connection Error");
@@ -47,7 +51,7 @@ app.use((err, req, res, next) => {
     stack: err.stack,
   });
 });
-app.use("/api/auth",authRoute)
+
 app.listen(port, () => {
 DatabaseConnection();
   console.log(`Server Listen on port ${port}`);
