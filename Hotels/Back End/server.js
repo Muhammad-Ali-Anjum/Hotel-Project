@@ -1,5 +1,5 @@
 import express  from "express";
-import authRoute from "./Router/auth.routes.js"
+import authRoute from "./Router/auth.router.js"
 import dotenv from "dotenv"
 import cors from "cors";
 import mongoose from "mongoose"
