@@ -1,10 +1,10 @@
 import express  from "express";
-import authRoute from "./Router/AuthRout.js"
+import authRoute from "./Router/AuthRout.Router.js"
 import dotenv from "dotenv"
 import cors from "cors";
 import mongoose from "mongoose"
 import cookieParser from "cookie-parser"
-import { login ,register} from "./Controller/auth.js";
+import { login ,register} from "./Controller/auth.controller.js";
 
 const app = express()
 
