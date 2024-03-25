@@ -21,6 +21,7 @@ import HotelIcon from '@mui/icons-material/Hotel';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Dashbaord from './componsent/Dashbaord/Dashbaord';
 import Hotels from './componsent/Hotels/Hotels';
 import Room from './componsent/Rooms/Room';
 import BookIcon from '@mui/icons-material/Book';
@@ -168,7 +169,7 @@ export default function MiniDrawer() {
           <DrawerHeader />
           <Routes>
             {/* Define routes for components */}
-            <Route path="/"  exact   element={<h1>Dashbaord</h1>} />
+            <Route path="/dashboard"   element={<Dashbaord/>} />
             <Route path="/hotels" element={<Hotels/>} />
             <Route path="/room" element={<Room/>} />
             <Route path="/booking" element={<Booking/>} />
