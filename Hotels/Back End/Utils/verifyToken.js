@@ -5,7 +5,7 @@ export const verifyToken = (req, res, next) => {
   if (req.cookies.access_token != null) {
     jwt.verify(
       req.cookies.access_token,
-      process.env.JWT_SECRET_KEY,
+      process.env.JWT,
       (err, user) => {
         if (err) {
           res.send({ err, message: "you are no authenticated" });
