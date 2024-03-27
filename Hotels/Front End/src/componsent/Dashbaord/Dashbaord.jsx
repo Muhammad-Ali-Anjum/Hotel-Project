@@ -1,11 +1,10 @@
-// Dashboard.jsx
-
-import React from 'react';
-import PieChart from './PieChart'
+// import PieChart from './PieChart'
+import BarChart from './Graph/BarChart ';
 const Dashboard = () => {
   return (
     <>
-     <PieChart/>
+     {/* <PieChart/> */}
+     <BarChart/>
     </>
   );
 };
