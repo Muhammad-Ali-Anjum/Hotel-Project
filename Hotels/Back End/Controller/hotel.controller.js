@@ -1,10 +1,10 @@
 import Hotel from "../Model/hotel.Model.js";
-import upload from "../Utils/multer.js";
+import multipleUpload from "../Utils/multer.js";
 
 export const createHotel = async (req, res, next) => {
   try {
     console.log("Passed check 1");
-    upload.single("photos")(req, res, async function (err) {
+    multipleUpload(req, res, async function (err) {
       if (err) {
         // Handle Multer upload error
         console.error("Error uploading images:", err); // Log the error for debugging
@@ -14,16 +14,15 @@ export const createHotel = async (req, res, next) => {
 
       // Continue only if there are no Multer upload errors
       try {
-        // Get the file path of the uploaded image from req.file
-        const photo = req.file.path;
-        console.log(photo);
+        // Get the file paths of the uploaded images from req.files
+        const photos = req.files.map(file => file.path);
         console.log("Request Body : ", req.body);
-        console.log("Request File : ", photo);
+        console.log("Request Files : ", photos);
         console.log("Passed check 3");
 
         const newHotel = new Hotel({
           ...req.body,
-          photos: [photo],
+          photos: photos,
         });
         console.log("Passed check 4");
 
@@ -40,6 +39,7 @@ export const createHotel = async (req, res, next) => {
     next(err);
   }
 };
+
 
 export const updateHotel = async (req, res, next) => {
   console.log("Request Body ", req.body);
