@@ -1,6 +1,7 @@
 import express  from "express";
 import authRoute from "./Router/auth.router.js"
 import usersRoute from "./Router/users.routes.js"
+import HotelRoute from "./Routes/hotel.routes.js";
 import dotenv from "dotenv"
 import cors from "cors";
 import mongoose from "mongoose"
@@ -19,7 +20,8 @@ app.use(express.json());
 app.use("/api/auth",authRoute)
 app.use("/api/users",usersRoute)
 app.post("/api/auth/register",register)
-app.post("/api/auth/login",login)
+app.post("/api/auth/login",login);
+app.use("/api/hotel", HotelRoute);
 
   const DatabaseConnection = async () => {
     try {
