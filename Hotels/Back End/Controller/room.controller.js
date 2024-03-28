@@ -1,6 +1,6 @@
-import Room from "../MyModels/roomModel.js";
-import Hotel from "../MyModels/hotelModel.js";
-import { CreateError } from "../Utilities/Errors.js";
+import Room from "../Model/room.model.js";
+import Hotel from "../Model/hotel.Model.js";
+import { CreateError } from "../Utils/Error.js";
 import mongoose from "mongoose";
 
 export const createRoom = async (req, res, next) => {
