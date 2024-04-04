@@ -24,6 +24,9 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Dashbaord from './componsent/Dashbaord/Dashbaord';
 import Hotels from './componsent/Hotels/Hotels';
 import Room from './componsent/Rooms/Room';
+import LoginForm from './componsent/LoginRegister/Login';
+import RegisterForm from './componsent/LoginRegister/Register';
+import Button from '@mui/material/Button';
 import BookIcon from '@mui/icons-material/Book';
 import Booking from './componsent/Booking/Booking';
 import User from './componsent/users/User';
@@ -134,7 +137,26 @@ export default function MiniDrawer() {
             <Typography variant="h4" noWrap component="div">
               Rinor 
             </Typography>
+            <div style={{ marginLeft: 'auto' }}>
+                <Button
+  color="inherit"
+  component={Link}
+  to="/login"
+  sx={{ '&:hover': { backgroundColor: 'yellow', color: 'black' } }}
+>
+  Login
+</Button>
+<Button
+  color="inherit"
+  component={Link}
+  to="/register"
+  sx={{ '&:hover': { backgroundColor: 'yellow', color: 'black' } }}
+>
+  Register
+</Button>
+                </div>
           </Toolbar>
+      
         </AppBar>
         <Drawer variant="permanent" open={open}>
           <DrawerHeader>
@@ -174,6 +196,8 @@ export default function MiniDrawer() {
             <Route path="/room" element={<Room/>} />
             <Route path="/booking" element={<Booking/>} />
             <Route path="/user" element={<User/>} />
+            <Route path="/login" element={<LoginForm />} />
+  <Route path="/register" element={<RegisterForm />} />
           </Routes>
         </Box>
       </Box>
