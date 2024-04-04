@@ -2,7 +2,7 @@ import express  from "express";
 import authRoute from "./Router/auth.router.js"
 import usersRoute from "./Router/users.routes.js"
 import HotelRoute from "./Router/hotel.routes.js";
-import RoomRoute from "./Router/hotel.routes.js";
+import RoomRoute from "./Router/room.routes.js";
 import dotenv from "dotenv"
 import cors from "cors";
 import mongoose from "mongoose"
@@ -18,6 +18,12 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 
+
+// Middlewares
+const corsOptions = {
+  credentials: true,
+  origin: 'http://localhost:5173'
+};
 app.use("/api/auth",authRoute)
 app.use("/api/users",usersRoute)
 app.post("/api/auth/register",register)

@@ -1,7 +1,7 @@
 import Hotel from "../Model/hotel.Model.js";
 import multipleUpload from "../Utils/multer.js";
 // Import your Hotel model
-import Room from '../Model/room.model.js';
+// import Room from '../Model/room.model.js';
 export const createHotel = async (req, res, next) => {
   try {
     console.log("Passed check 1");

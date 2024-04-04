@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Grid, Box, TextField, Button, Modal, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { withRouter } from 'react-router-dom'; // Import withRouter
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
-const RegisterForm = ({ history }) => {
+const RegisterForm = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate(); // Use navigate for redirection
 
   // Validation schema using Yup
   const validationSchema = Yup.object().shape({
@@ -28,11 +30,27 @@ const RegisterForm = ({ history }) => {
   const formik = useFormik({
     initialValues,
     validationSchema,
-    onSubmit: (values) => {
-      // Redirect to login page upon successful registration
-      history.push('/login');
-      setIsModalOpen(true);
+    
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/auth/register",
+          values, 
+        );
+        console.log(response.data); // Assuming response contains user data or token
+        resetForm();
+        // handleOpen();
+        setIsModalOpen(true);
+      } catch (error) {
+        console.error("Error:", error);
+      }
     },
+    // onSubmit: (values) => {
+     
+
+    //   // Redirect to login page upon successful registration
+    //   navigate('/login');
+    // },
   });
 
   return (
@@ -138,4 +156,4 @@ const RegisterForm = ({ history }) => {
   );
 };
 
-export default withRouter(RegisterForm);
+export default RegisterForm;
