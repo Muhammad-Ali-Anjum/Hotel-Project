@@ -1,13 +1,13 @@
 // import PieChart from './PieChart'
 import BarChart from "./Graph/BarChart ";
 import BasicPie from "./Graph/PieChart";
-import BoxSystemProps from "./Graph/Box";
+import SaleBox from "./Graph/SaleBox";
 const Dashboard = () => {
   return (
     <>
       {/* <PieChart/> */}
       <dev>
-        <BoxSystemProps/>
+        <SaleBox/>
         <hr />
         <BarChart />
         <BasicPie />
