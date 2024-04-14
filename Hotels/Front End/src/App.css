@@ -1,42 +1,51 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Add your base styles and responsive styles here */
+
+.App {
+  display: flex;
+  min-height: 100vh;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.header,
+.sidebar,
+.content {
+  flex: 1;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.sidebar {
+  background-color: #f0f0f0;
+  padding: 20px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.content {
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
   }
-  to {
-    transform: rotate(360deg);
+
+  .sidebar.open {
+    transform: translateX(0);
   }
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  .header .user-actions {
+    display: none;
   }
-}
 
-.card {
-  padding: 2em;
-}
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-.read-the-docs {
-  color: #888;
+  .nav-toggler {
+    display: block;
+  }
 }
