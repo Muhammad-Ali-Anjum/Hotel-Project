@@ -1,15 +1,22 @@
 // import PieChart from './PieChart'
-import BarChart from "./Graph/BarChart ";
+import SimpleBarChart from "./Graph/BarChart ";
 import BasicPie from "./Graph/PieChart";
 import SaleBox from "./Graph/SaleBox";
 const Dashboard = () => {
   return (
     <>
       {/* <PieChart/> */}
-      <dev>
-        <SaleBox/>
+      <SaleBox/>
         <hr />
-        <BarChart />
+      <dev style={{
+        display: "flex",
+        justifyContent: "space-between",
+        marginLeft: 20,
+        width:1200
+      }}>
+
+        
+        <SimpleBarChart />
         <BasicPie />
       </dev>
     </>
