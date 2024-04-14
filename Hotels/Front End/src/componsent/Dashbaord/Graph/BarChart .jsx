@@ -6,7 +6,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { BarChart as MuiBarChart } from '@mui/x-charts';
 
-export default function BarChart() {
+export default function BarCharts() {
   const [seriesNb, setSeriesNb] = React.useState(2);
   const [itemNb, setItemNb] = React.useState(5);
   const [skipAnimation, setSkipAnimation] = React.useState(false);
@@ -51,7 +51,7 @@ export default function BarChart() {
   ];
 
   return (
-    <Box sx={{ width: '1000px'  }}>
+    <Box sx={{ width: '500px'  }}>
       <MuiBarChart
         height={300}
         series={series.slice(0, seriesNb).map(s => ({ ...s, data: s.data.slice(0, itemNb) }))}
