@@ -26,15 +26,7 @@ const LoginForm = () => {
             Login Form
           </Typography>
           <form onSubmit={handleSubmit}>
-            <TextField
-              label="Username"
-              variant="outlined"
-              fullWidth
-              size="small"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              margin="normal"
-            />
+            
             <TextField
               label="Email"
               variant="outlined"
@@ -66,17 +58,9 @@ const LoginForm = () => {
       <Modal open={isModalOpen} onClose={handleCloseModal}>
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4, maxWidth: '80%' }}>
           <Typography variant="h5" gutterBottom>
-            Submitted Data
+          Login successfully!
           </Typography>
-          <Typography variant="body1" gutterBottom>
-            Username: {username}
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            Email: {email}
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            Password: {password}
-          </Typography>
+       
         </Box>
       </Modal>
     </Grid>

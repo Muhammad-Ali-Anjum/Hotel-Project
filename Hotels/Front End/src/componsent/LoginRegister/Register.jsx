@@ -138,18 +138,13 @@ const RegisterForm = () => {
       </Grid>
       <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4, maxWidth: '80%' }}>
+        <Typography variant="h2" gutterBottom>
+            Congratulations!
+          </Typography>
           <Typography variant="h5" gutterBottom>
-            Submitted Data
+            Form submitted successfully.
           </Typography>
-          <Typography variant="body1" gutterBottom>
-            First Name: {formik.values.firstName}
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            Last Name: {formik.values.lastName}
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            Email: {formik.values.email}
-          </Typography>
+          
         </Box>
       </Modal>
     </Grid>
