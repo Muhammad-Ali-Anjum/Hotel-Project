@@ -6,7 +6,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const RegisterForm = () => {
+  const Navegate=useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const navigate = useNavigate(); // Use navigate for redirection
 
   // Validation schema using Yup
@@ -38,9 +40,11 @@ const RegisterForm = () => {
           values, 
         );
         console.log(response.data); // Assuming response contains user data or token
-        resetForm();
         // handleOpen();
         setIsModalOpen(true);
+        resetForm();
+        Navegate('/login');
+        
       } catch (error) {
         console.error("Error:", error);
       }
