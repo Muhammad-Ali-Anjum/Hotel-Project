@@ -1,86 +1,157 @@
-import React, { useState } from 'react';
-import { useMemo } from 'react';
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
-import { Box, ListItemIcon, MenuItem, Button, Modal, TextField, Typography, IconButton, RadioGroup, Radio, FormControlLabel } from '@mui/material';
-import { Edit, Delete, Close } from '@mui/icons-material';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { data } from './BookingsData';
-import { useFormik } from 'formik';
+/* eslint-disable react/prop-types */
+import { useState, useEffect, useMemo } from "react";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
+import {
+  Box,
+  ListItemIcon,
+  MenuItem,
+  Button,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { Edit, Delete } from "@mui/icons-material";
+// import { data } from "./HotelsData";
+import axios from "axios";
 
 const Hotels = () => {
-  const [open, setOpen] = useState(false);
+  const [hotelList, setHotelList] = useState([]);
+  const [hotelData, setHotelData] = useState({
+    name: "",
+    city: "",
+    address: "",
+    distance: "",
+    rating: "",
+    cheapestPrice: "",
+    featured: false,
+    type: "",
+    title: "",
+    desc: "",
+  });
 
-  const handleOpen = () => {
-    setOpen(true);
+  const resetForm = () => {
+    setHotelData({
+      name: "",
+      city: "",
+      address: "",
+      distance: "",
+      rating: "",
+      cheapestPrice: "",
+      featured: false,
+      type: "",
+      title: "",
+      desc: "",
+    });
+  };
+  const handleChange = (event) => {
+    const { name, value, type } = event.target;
+    const newValue = type === "checkbox" ? event.target.checked : value;
+    setHotelData({ ...hotelData, [name]: newValue });
+  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  };
+  const fetchHotelData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/hotel/hotels"
+      );
+      console.log("Hotels", response.data);
+      setHotelList(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleModalClose = async () => {
+    await axios.post("http://localhost:8000/api/hotel/", hotelData);
+
+    resetForm();
+    setIsModalOpen(false);
   };
+  let handleDelete = async (id) => {
+    // console.log("id", id);
+    try {
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete the data?"
+      );
+      if (confirmDelete) {
+        await axios.delete(`http://localhost:8000/api/hotels/${id}`);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchHotelData();
+  }, [hotelList]);
 
   const columns = useMemo(
     () => [
       {
-        id: 'hotels',
-        header: 'Hotels',
+        id: "hotels",
+        header: "Hotels",
         columns: [
           {
-            accessorKey: 'photos', // Change accessorKey to 'photos'
-            header: 'Photos', // Change header to 'Photos'
+            accessorFn: (row) => row.name,
+            id: "name",
+            header: "Name",
             size: 200,
-            // Modify Cell component if needed
+            Cell: ({ renderedCellValue, row }) => (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "1rem",
+                }}
+              >
+                <img
+                  alt="avatar"
+                  height={50}
+                  src={row.original.photos[0]}
+                  loading="lazy"
+                  style={{ border: "2px solid teal", borderRadius: "5px" }}
+                />
+                <span>{renderedCellValue}</span>
+              </Box>
+            ),
           },
           {
-            accessorKey: 'name', // Change accessorKey to 'name'
-            header: 'Name', // Change header to 'Name'
-            size: 200,
+            accessorKey: "city",
+            header: "City",
+            size: 150,
           },
           {
-            accessorKey: 'type', // Change accessorKey to 'type'
-            header: 'Type', // Change header to 'Type'
-            size: 200,
+            accessorKey: "address",
+            header: "Address",
+            size: 150,
+          },
+          // {
+          //   accessorKey: "distance",
+          //   header: "Distance",
+          //   size: 150,
+          // },
+          {
+            accessorKey: "rating",
+            header: "Rating",
+            size: 150,
           },
           {
-            accessorKey: 'city', // Change accessorKey to 'city'
-            header: 'City', // Change header to 'City'
-            size: 200,
+            accessorKey: "cheapestPrice",
+            header: "Cheapest Price ($)",
+            size: 150,
           },
-          {
-            accessorKey: 'address', // Change accessorKey to 'address'
-            header: 'Address', // Change header to 'Address'
-            size: 200,
-          },
-          {
-            accessorKey: 'title', // Change accessorKey to 'title'
-            header: 'Title', // Change header to 'Title'
-            size: 200,
-          },
-          {
-            accessorKey: 'desc', // Change accessorKey to 'desc'
-            header: 'Description', // Change header to 'Description'
-            size: 200,
-          },
-          {
-            accessorKey: 'rating', // Change accessorKey to 'rating'
-            header: 'Rating', // Change header to 'Rating'
-            size: 200,
-          },
-          {
-            accessorKey: 'rooms', // Change accessorKey to 'rooms'
-            header: 'Rooms', // Change header to 'Rooms'
-            size: 200,
-          },
-          {
-            accessorKey: 'cheapestPrice', // Change accessorKey to 'cheapestPrice'
-            header: 'Cheapest Price', // Change header to 'Cheapest Price'
-            size: 200,
-          },
-          {
-            accessorKey: 'featured', // Change accessorKey to 'featured'
-            header: 'Featured', // Change header to 'Featured'
-            size: 200,
-          },
+          // {
+          //   accessorKey: "featured",
+          //   header: "Featured",
+          //   size: 150,
+          // },
         ],
       },
     ],
@@ -89,7 +160,7 @@ const Hotels = () => {
 
   const table = useMaterialReactTable({
     columns,
-    data,
+    data: hotelList,
     enableColumnFilterModes: true,
     enableColumnOrdering: true,
     enableGrouping: true,
@@ -97,47 +168,64 @@ const Hotels = () => {
     enableFacetedValues: true,
     enableRowActions: true,
     enableRowSelection: true,
+    getRowId: (row) => row.id,
     initialState: {
       showColumnFilters: false,
       showGlobalFilter: true,
       columnPinning: {
-        left: ['mrt-row-expand', 'mrt-row-select'],
-        right: ['mrt-row-actions'],
+        left: ["mrt-row-expand", "mrt-row-select"],
+        right: ["mrt-row-actions"],
       },
     },
-    paginationDisplayMode: 'pages',
-    positionToolbarAlertBanner: 'bottom',
+    paginationDisplayMode: "pages",
+    positionToolbarAlertBanner: "bottom",
     muiSearchTextFieldProps: {
-      size: 'small',
-      variant: 'outlined',
+      size: "small",
+      variant: "outlined",
     },
     muiPaginationProps: {
-      color: 'secondary',
+      color: "secondary",
       rowsPerPageOptions: [5, 10, 15, 20, 25, 30],
-      shape: 'rounded',
-      variant: 'outlined',
+      shape: "rounded",
+      variant: "outlined",
     },
     renderDetailPanel: ({ row }) => (
       <Box
         sx={{
-        alignItems: 'center',
-        display: 'flex',
-        justifyContent: 'space-around',
-        left: '30px',
-        maxWidth: '1000px',
-        position: 'sticky',
-        width: '100%',
+          alignItems: "center",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          padding: "16px",
+          textAlign: "center",
+          maxWidth: "100%",
         }}
       >
-        {/* Render detail panel if needed */}
+        <img
+          alt="avatar"
+          src={row.original.photos[0]}
+          loading="lazy"
+          style={{
+            maxWidth: "100%",
+            height: "auto",
+            border: "2px solid teal",
+            borderRadius: "5px",
+            marginBottom: "16px",
+          }}
+        />
+        <Typography variant="h5" sx={{ marginBottom: "8px" }}>
+          {row.original.title}
+        </Typography>
+        <Typography variant="body1">{row.original.desc}</Typography>
       </Box>
     ),
-    renderRowActionMenuItems: ({ closeMenu, table }) => [
+
+    renderRowActionMenuItems: (params) => [
       <MenuItem
         key="edit"
         onClick={() => {
           // Edit logic...
-          closeMenu();
+          params.closeMenu();
         }}
         sx={{ m: 0 }}
       >
@@ -149,9 +237,9 @@ const Hotels = () => {
       <MenuItem
         key="delete"
         onClick={() => {
-          const selectedRows = table.getSelectedRowModel().flatRows;
-          selectedRows.forEach((row) => table.deleteRow(row.id));
-          closeMenu();
+          handleDelete(params.row.original._id);
+
+          params.closeMenu();
         }}
         sx={{ m: 0 }}
       >
@@ -163,214 +251,155 @@ const Hotels = () => {
     ],
   });
 
-  const initialValues = {
-    photos: '',
-    name: '',
-    type: '',
-    city: '',
-    address: '',
-    title: '',
-    desc: '',
-    rating: '',
-    rooms: '',
-    cheapestPrice: '',
-    featured: false, // Assuming featured should be a boolean
-  };
-
-  const validationSchema = Yup.object().shape({
-    photos: Yup.string().required('Photos URL is required'),
-    name: Yup.string().required('Name is required'),
-    type: Yup.string().required('Type is required'),
-    city: Yup.string().required('City is required'),
-    address: Yup.string().required('Address is required'),
-    title: Yup.string().required('Title is required'),
-    desc: Yup.string().required('Description is required'),
-    rating: Yup.number().required('Rating is required'),
-    rooms: Yup.number().required('Number of rooms is required'),
-    cheapestPrice: Yup.number().required('Cheapest Price is required'),
-    featured: Yup.boolean().required('Featured is required'),
-  });
-  const formik = useFormik({
-    initialValues,
-    validationSchema,
-    
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        const response = await axios.post(
-          "http://localhost:8000/api/auth/register",
-          values, 
-        );
-        console.log(response.data); // Assuming response contains user data or token
-        // handleOpen();
-        setIsModalOpen(true);
-        resetForm();
-        Navegate('/login');
-        
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    },
-    // onSubmit: (values) => {
-     
-
-    //   // Redirect to login page upon successful registration
-    //   navigate('/login');
-    // },
-  });
-
   return (
-    <Box position="relative">
-      <Button
-        variant="contained"
-        color="primary"
-        style={{ position: 'relative', top: 0, left: '86%', zIndex: 1 }}
-        onClick={handleOpen}
-      >
-        Create Hotel
-      </Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="create-hotel-modal"
-        aria-describedby="create-hotel-modal-description"
-      >
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4, maxWidth: '90%' , overflow:'auto' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <IconButton onClick={handleClose} aria-label="close">
-              <Close />
-            </IconButton>
-          </Box>
-          <Typography variant="h5" component="div" gutterBottom>
-            Create Hotel
-          </Typography>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={(values, { resetForm }) => {
-              console.log(values);
-              resetForm();
-              handleClose();
-            }}
-          >
-            {({ errors, touched }) => (
-              <Form onSubmit={formik.handleSubmit}>
-                <Field
-                  name="photos"
-                  as={TextField}
-                  label="Photos URL"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.photos && !!errors.photos}
-                  helperText={touched.photos && errors.photos}
-                />
-                <Field
-                  name="name"
-                  as={TextField}
-                  label="Name"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.name && !!errors.name}
-                  helperText={touched.name && errors.name}
-                />
-                <Field
-                  name="type"
-                  as={TextField}
-                  label="Type"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.type && !!errors.type}
-                  helperText={touched.type && errors.type}
-                />
-                <Field
-                  name="city"
-                  as={TextField}
-                  label="City"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.city && !!errors.city}
-                  helperText={touched.city && errors.city}
-                />
-                <Field
-                  name="address"
-                  as={TextField}
-                  label="Address"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.address && !!errors.address}
-                  helperText={touched.address && errors.address}
-                />
-                <Field
-                  name="title"
-                  as={TextField}
-                  label="Title"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.title && !!errors.title}
-                  helperText={touched.title && errors.title}
-                />
-                <Field
-                  name="desc"
-                  as={TextField}
-                  label="Description"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.desc && !!errors.desc}
-                  helperText={touched.desc && errors.desc}
-                />
-                <Field
-                  name="rating"
-                  as={TextField}
-                  label="Rating"
-                  type="number"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.rating && !!errors.rating}
-                  helperText={touched.rating && errors.rating}
-                />
-                <Field
-                  name="rooms"
-                  as={TextField}
-                  label="Rooms"
-                  type="number"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.rooms && !!errors.rooms}
-                  helperText={touched.rooms && errors.rooms}
-                />
-                <Field
-                  name="cheapestPrice"
-                  as={TextField}
-                  label="Cheapest Price"
-                  type="number"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.cheapestPrice && !!errors.cheapestPrice}
-                  helperText={touched.cheapestPrice && errors.cheapestPrice}
-                />
-                <FormControlLabel
-                  control={<Field as={Radio} name="featured" />}
-                  label="Featured"
-                />
-                <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-                  Create Hotel
-                </Button>
-              </Form>
-            )}
-          </Formik>
+    <>
+      <Box mb={2} textAlign="right">
+        <Button variant="contained" color="primary" onClick={handleModalOpen}>
+          ADD NEW+
+        </Button>
+      </Box>
+      <MaterialReactTable table={table} />
+
+      {/* New Hotels Form */}
+      <Modal open={isModalOpen} onClose={handleModalClose}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            width: 400,
+            maxWidth: "90%",
+            maxHeight: "90%",
+            overflowY: "auto",
+          }}
+        >
+          <form>
+            <Typography variant="h5">Add New Booking</Typography>
+            <TextField
+              variant="standard"
+              label="Name"
+              fullWidth
+              margin="normal"
+              name="name"
+              value={hotelData.name}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="standard"
+              label="City"
+              fullWidth
+              margin="normal"
+              name="city"
+              value={hotelData.city}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="standard"
+              label="Address"
+              fullWidth
+              margin="normal"
+              name="address"
+              value={hotelData.address}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="standard"
+              label="Distance"
+              fullWidth
+              margin="normal"
+              name="distance"
+              value={hotelData.distance}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="standard"
+              label="Rating"
+              fullWidth
+              margin="normal"
+              name="rating"
+              value={hotelData.rating}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="standard"
+              label="Cheapest Price"
+              fullWidth
+              margin="normal"
+              name="cheapestPrice"
+              value={hotelData.cheapestPrice}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="standard"
+              label="Featured"
+              fullWidth
+              margin="normal"
+              name="featured"
+              value={hotelData.featured}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="standard"
+              label="Type"
+              fullWidth
+              margin="normal"
+              name="type"
+              value={hotelData.type}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="standard"
+              label="Title"
+              fullWidth
+              margin="normal"
+              name="title"
+              value={hotelData.title}
+              onChange={handleChange}
+            />
+            <TextField
+              variant="standard"
+              label="Description"
+              fullWidth
+              margin="normal"
+              name="desc"
+              value={hotelData.desc}
+              onChange={handleChange}
+            />
+            {/* Other fields */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "1rem",
+              }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  resetForm();
+                  setIsModalOpen(false);
+                }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleModalClose}
+              >
+                Add Booking
+              </Button>
+            </Box>
+          </form>
         </Box>
       </Modal>
-      <MaterialReactTable table={table} />
-    </Box>
+    </>
   );
 };
 

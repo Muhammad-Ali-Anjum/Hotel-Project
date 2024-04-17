@@ -12,9 +12,9 @@ const HotelSchema = new mongoose.Schema({
   address: {
     type: String,
   },
-//   distance: {
-//     type: String,
-//   },
+  distance: {
+    type: String,
+  },
   photos: {
     type: [String],
   },

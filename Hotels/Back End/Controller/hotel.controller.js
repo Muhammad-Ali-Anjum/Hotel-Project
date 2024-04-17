@@ -16,14 +16,14 @@ export const createHotel = async (req, res, next) => {
       // Continue only if there are no Multer upload errors
       try {
         // Get the file paths of the uploaded images from req.files
-        const photos = req.files.map(file => file.path);
-        console.log("Request Body : ", req.body);
-        console.log("Request Files : ", photos);
+        // const photos = req.files.map(file => file.path);
+        // console.log("Request Body : ", req.body);
+        // console.log("Request Files : ", photos);
         console.log("Passed check 3");
 
         const newHotel = new Hotel({
           ...req.body,
-          photos: photos,
+          photos:"",
         });
         console.log("Passed check 4");
 

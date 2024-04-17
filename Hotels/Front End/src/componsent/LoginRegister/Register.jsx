@@ -49,12 +49,7 @@ const RegisterForm = () => {
         console.error("Error:", error);
       }
     },
-    // onSubmit: (values) => {
-     
-
-    //   // Redirect to login page upon successful registration
-    //   navigate('/login');
-    // },
+   
   });
 
   return (
