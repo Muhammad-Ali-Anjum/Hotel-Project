@@ -6,6 +6,7 @@ import { Edit, Delete, Close } from '@mui/icons-material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { data } from './BookingsData';
+import { useFormik } from 'formik';
 
 const Hotels = () => {
   const [open, setOpen] = useState(false);
@@ -21,33 +22,63 @@ const Hotels = () => {
   const columns = useMemo(
     () => [
       {
-        id: 'bookings',
-        header: 'Bookings',
+        id: 'hotels',
+        header: 'Hotels',
         columns: [
           {
-            accessorKey: 'GuestName', // Change accessorKey to 'GuestName'
-            header: 'Guest Name', // Change header to 'Guest Name'
+            accessorKey: 'photos', // Change accessorKey to 'photos'
+            header: 'Photos', // Change header to 'Photos'
             size: 200,
             // Modify Cell component if needed
           },
           {
-            accessorKey: 'Room', // Change accessorKey to 'Room'
-            header: 'Room', // Change header to 'Room'
+            accessorKey: 'name', // Change accessorKey to 'name'
+            header: 'Name', // Change header to 'Name'
             size: 200,
           },
           {
-            accessorKey: 'CheckIn', // Change accessorKey to 'CheckIn'
-            header: 'Check-in', // Change header to 'Check-in'
+            accessorKey: 'type', // Change accessorKey to 'type'
+            header: 'Type', // Change header to 'Type'
             size: 200,
           },
           {
-            accessorKey: 'CheckOut', // Change accessorKey to 'CheckOut'
-            header: 'Check-out', // Change header to 'Check-out'
+            accessorKey: 'city', // Change accessorKey to 'city'
+            header: 'City', // Change header to 'City'
             size: 200,
           },
           {
-            accessorKey: 'Price', // Change accessorKey to 'Price'
-            header: 'Price', // Change header to 'Price'
+            accessorKey: 'address', // Change accessorKey to 'address'
+            header: 'Address', // Change header to 'Address'
+            size: 200,
+          },
+          {
+            accessorKey: 'title', // Change accessorKey to 'title'
+            header: 'Title', // Change header to 'Title'
+            size: 200,
+          },
+          {
+            accessorKey: 'desc', // Change accessorKey to 'desc'
+            header: 'Description', // Change header to 'Description'
+            size: 200,
+          },
+          {
+            accessorKey: 'rating', // Change accessorKey to 'rating'
+            header: 'Rating', // Change header to 'Rating'
+            size: 200,
+          },
+          {
+            accessorKey: 'rooms', // Change accessorKey to 'rooms'
+            header: 'Rooms', // Change header to 'Rooms'
+            size: 200,
+          },
+          {
+            accessorKey: 'cheapestPrice', // Change accessorKey to 'cheapestPrice'
+            header: 'Cheapest Price', // Change header to 'Cheapest Price'
+            size: 200,
+          },
+          {
+            accessorKey: 'featured', // Change accessorKey to 'featured'
+            header: 'Featured', // Change header to 'Featured'
             size: 200,
           },
         ],
@@ -133,19 +164,58 @@ const Hotels = () => {
   });
 
   const initialValues = {
-    GuestName: '',
-    Room: '',
-    CheckIn: '',
-    CheckOut: '',
-    Price: '',
+    photos: '',
+    name: '',
+    type: '',
+    city: '',
+    address: '',
+    title: '',
+    desc: '',
+    rating: '',
+    rooms: '',
+    cheapestPrice: '',
+    featured: false, // Assuming featured should be a boolean
   };
 
   const validationSchema = Yup.object().shape({
-    GuestName: Yup.string().required('Guest Name is required'),
-    Room: Yup.string().required('Room is required'),
-    CheckIn: Yup.string().required('Check-in date is required'),
-    CheckOut: Yup.string().required('Check-out date is required'),
-    Price: Yup.number().required('Price is required'),
+    photos: Yup.string().required('Photos URL is required'),
+    name: Yup.string().required('Name is required'),
+    type: Yup.string().required('Type is required'),
+    city: Yup.string().required('City is required'),
+    address: Yup.string().required('Address is required'),
+    title: Yup.string().required('Title is required'),
+    desc: Yup.string().required('Description is required'),
+    rating: Yup.number().required('Rating is required'),
+    rooms: Yup.number().required('Number of rooms is required'),
+    cheapestPrice: Yup.number().required('Cheapest Price is required'),
+    featured: Yup.boolean().required('Featured is required'),
+  });
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/auth/register",
+          values, 
+        );
+        console.log(response.data); // Assuming response contains user data or token
+        // handleOpen();
+        setIsModalOpen(true);
+        resetForm();
+        Navegate('/login');
+        
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    },
+    // onSubmit: (values) => {
+     
+
+    //   // Redirect to login page upon successful registration
+    //   navigate('/login');
+    // },
   });
 
   return (
@@ -164,7 +234,7 @@ const Hotels = () => {
         aria-labelledby="create-hotel-modal"
         aria-describedby="create-hotel-modal-description"
       >
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4, maxWidth: '90%' }}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4, maxWidth: '90%' , overflow:'auto' }}>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <IconButton onClick={handleClose} aria-label="close">
               <Close />
@@ -183,59 +253,113 @@ const Hotels = () => {
             }}
           >
             {({ errors, touched }) => (
-              <Form>
+              <Form onSubmit={formik.handleSubmit}>
                 <Field
-                  name="GuestName"
+                  name="photos"
                   as={TextField}
-                  label="Guest Name"
+                  label="Photos URL"
                   variant="outlined"
                   fullWidth
                   margin="normal"
-                  error={touched.GuestName && !!errors.GuestName}
-                  helperText={touched.GuestName && errors.GuestName}
+                  error={touched.photos && !!errors.photos}
+                  helperText={touched.photos && errors.photos}
                 />
                 <Field
-                  name="Room"
+                  name="name"
                   as={TextField}
-                  label="Room"
+                  label="Name"
                   variant="outlined"
                   fullWidth
                   margin="normal"
-                  error={touched.Room && !!errors.Room}
-                  helperText={touched.Room && errors.Room}
+                  error={touched.name && !!errors.name}
+                  helperText={touched.name && errors.name}
                 />
                 <Field
-                  name="CheckIn"
+                  name="type"
                   as={TextField}
-                  label="Check-in"
-                  type="date"
+                  label="Type"
                   variant="outlined"
                   fullWidth
                   margin="normal"
-                  error={touched.CheckIn && !!errors.CheckIn}
-                  helperText={touched.CheckIn && errors.CheckIn}
+                  error={touched.type && !!errors.type}
+                  helperText={touched.type && errors.type}
                 />
                 <Field
-                  name="CheckOut"
+                  name="city"
                   as={TextField}
-                  label="Check-out"
-                  type="date"
+                  label="City"
                   variant="outlined"
                   fullWidth
                   margin="normal"
-                  error={touched.CheckOut && !!errors.CheckOut}
-                  helperText={touched.CheckOut && errors.CheckOut}
+                  error={touched.city && !!errors.city}
+                  helperText={touched.city && errors.city}
                 />
                 <Field
-                  name="Price"
+                  name="address"
                   as={TextField}
-                  label="Price"
+                  label="Address"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  error={touched.address && !!errors.address}
+                  helperText={touched.address && errors.address}
+                />
+                <Field
+                  name="title"
+                  as={TextField}
+                  label="Title"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  error={touched.title && !!errors.title}
+                  helperText={touched.title && errors.title}
+                />
+                <Field
+                  name="desc"
+                  as={TextField}
+                  label="Description"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  error={touched.desc && !!errors.desc}
+                  helperText={touched.desc && errors.desc}
+                />
+                <Field
+                  name="rating"
+                  as={TextField}
+                  label="Rating"
                   type="number"
                   variant="outlined"
                   fullWidth
                   margin="normal"
-                  error={touched.Price && !!errors.Price}
-                  helperText={touched.Price && errors.Price}
+                  error={touched.rating && !!errors.rating}
+                  helperText={touched.rating && errors.rating}
+                />
+                <Field
+                  name="rooms"
+                  as={TextField}
+                  label="Rooms"
+                  type="number"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  error={touched.rooms && !!errors.rooms}
+                  helperText={touched.rooms && errors.rooms}
+                />
+                <Field
+                  name="cheapestPrice"
+                  as={TextField}
+                  label="Cheapest Price"
+                  type="number"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  error={touched.cheapestPrice && !!errors.cheapestPrice}
+                  helperText={touched.cheapestPrice && errors.cheapestPrice}
+                />
+                <FormControlLabel
+                  control={<Field as={Radio} name="featured" />}
+                  label="Featured"
                 />
                 <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
                   Create Hotel

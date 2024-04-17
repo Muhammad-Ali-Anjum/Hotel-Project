@@ -24,7 +24,7 @@ const LoginForm = () => {
   const Navigate= useNavigate();
   const formik = useFormik({
     initialValues: {
-      // username: "",
+      // username: ""
       email: "",
       password: "",
     },
@@ -62,18 +62,7 @@ const LoginForm = () => {
         onSubmit={formik.handleSubmit}
         sx={{ width: "300px", mt: 2 }}
       >
-        {/* <TextField
-          fullWidth
-          id="username"
-          name="username"
-          label="Username"
-          value={formik.values.username}
-          onBlur={formik.handleBlur}
-          onChange={formik.handleChange}
-          error={formik.touched.username && Boolean(formik.errors.username)}
-          helperText={formik.touched.username && formik.errors.username}
-          margin="normal"
-        /> */}
+        
         <TextField
           fullWidth
           id="email"
