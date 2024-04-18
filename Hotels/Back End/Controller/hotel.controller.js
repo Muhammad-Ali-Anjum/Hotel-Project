@@ -74,7 +74,7 @@ export const getHotel = async (req, res, next) => {
   }
 };
 export const getHotels = async (req, res, next) => {
-  console.log("Request Queries", req.query);
+  // console.log("Request Queries", req.query);
   const { min, max, ...others } = req.query;
 
   try {

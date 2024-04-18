@@ -19,6 +19,7 @@ import axios from "axios";
 
 const Hotels = () => {
   const [hotelList, setHotelList] = useState([]);
+  const [id, setId] = useState("");
   const [hotelData, setHotelData] = useState({
     name: "",
     city: "",
@@ -61,7 +62,6 @@ const Hotels = () => {
       const response = await axios.get(
         "http://localhost:8000/api/hotel/hotels"
       );
-      console.log("Hotels", response.data);
       setHotelList(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -69,11 +69,33 @@ const Hotels = () => {
   };
 
   const handleModalClose = async () => {
-    await axios.post("http://localhost:8000/api/hotel/", hotelData);
+    if (id === "") {
+      //  const {id, ...data}=hotelData
+      await axios.post("http://localhost:8000/api/hotel/", hotelData);
 
-    resetForm();
-    setIsModalOpen(false);
+      resetForm();
+      setIsModalOpen(false);
+    } else {
+      // console.log("id", id);
+      handleUpdate(id);
+    }
   };
+  const handleUpdate = async (id) => {
+    try {
+      console.log("id", id);
+
+      await axios
+        .put(`http://localhost:8000/api/hotel/${id}`, hotelData)
+        .then(() => {
+          resetForm();
+          setId("");
+          setIsModalOpen(false);
+        });
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
+  };
+
   let handleDelete = async (id) => {
     // console.log("id", id);
     try {
@@ -88,9 +110,9 @@ const Hotels = () => {
     }
   };
 
-  // useEffect(() => {
-   fetchHotelData();
-  // }, [hotelList]);
+  useEffect(() => {
+    fetchHotelData();
+  }, [hotelList]);
 
   const columns = useMemo(
     () => [
@@ -221,12 +243,33 @@ const Hotels = () => {
     ),
 
     renderRowActionMenuItems: (params) => [
+      // <MenuItem
+      //   key="View"
+      //   onClick={() => {
+      //     setHotelData(
+      //       hotelList.find((item) => item._id === params.row.original._id)
+      //     )
+      //     setId(params.row.original._id)
+      //     setIsModalOpen(true);
+
+      //     params.closeMenu();
+      //   }}
+      //   sx={{ m: 0 }}
+      // >
+      //   <ListItemIcon>
+      //     <VisibilityIcon/>
+      //   </ListItemIcon>
+      //   View
+      // </MenuItem>,
       <MenuItem
-        key="Edit"
+        key="edit"
         onClick={() => {
-          // Edit logic...
+          setHotelData(
+            hotelList.find((item) => item._id === params.row.original._id)
+          )
+          setId(params.row.original._id)
           setIsModalOpen(true);
-          setHotelData(hotelList.find(item=>item._id===params.rpw.original._id))
+
           params.closeMenu();
         }}
         sx={{ m: 0 }}
@@ -240,7 +283,6 @@ const Hotels = () => {
         key="delete"
         onClick={() => {
           handleDelete(params.row.original._id);
-
           params.closeMenu();
         }}
         sx={{ m: 0 }}
@@ -280,7 +322,7 @@ const Hotels = () => {
           }}
         >
           <form>
-            <Typography variant="h5">Add New Booking</Typography>
+            <Typography variant="h5">Add New Hotel</Typography>
             <TextField
               variant="standard"
               label="Name"
@@ -381,7 +423,7 @@ const Hotels = () => {
               }}
             >
               <Button
-                variant="contained"
+                variant="outlined"
                 color="primary"
                 onClick={() => {
                   resetForm();
@@ -395,7 +437,7 @@ const Hotels = () => {
                 color="primary"
                 onClick={handleModalClose}
               >
-                Add Booking
+                {id === "" ? "Add Hotel" : "Update Hotel"}
               </Button>
             </Box>
           </form>
