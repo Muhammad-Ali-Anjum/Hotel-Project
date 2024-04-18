@@ -88,9 +88,9 @@ const Hotels = () => {
     }
   };
 
-  useEffect(() => {
-    fetchHotelData();
-  }, [hotelList]);
+  // useEffect(() => {
+   fetchHotelData();
+  // }, [hotelList]);
 
   const columns = useMemo(
     () => [
