@@ -81,7 +81,7 @@ const Hotels = () => {
         "Are you sure you want to delete the data?"
       );
       if (confirmDelete) {
-        await axios.delete(`http://localhost:8000/api/hotels/${id}`);
+        await axios.delete(`http://localhost:8000/api/hotel/${id}`);
       }
     } catch (error) {
       console.log(error);
@@ -222,9 +222,11 @@ const Hotels = () => {
 
     renderRowActionMenuItems: (params) => [
       <MenuItem
-        key="edit"
+        key="Edit"
         onClick={() => {
           // Edit logic...
+          setIsModalOpen(true);
+          setHotelData(hotelList.find(item=>item._id===params.rpw.original._id))
           params.closeMenu();
         }}
         sx={{ m: 0 }}

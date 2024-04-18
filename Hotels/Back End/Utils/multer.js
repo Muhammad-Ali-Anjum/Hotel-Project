@@ -15,6 +15,6 @@ const upload = multer({
 });
 
 // Adjust upload to accept multiple files
-const multipleUpload = upload.array("photos", 5); // Maximum of 5 images
+const multipleUpload = upload.array("photos", 5); // Maximum of 5 images 
 
 export default multipleUpload;
