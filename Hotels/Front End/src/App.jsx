@@ -32,7 +32,7 @@ import Booking from './componsent/Booking/Booking';
 import User from './componsent/users/User';
 import BedIcon from '@mui/icons-material/Bed';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
-import singleHotel from './componsent/Hotels/singleHotel';
+import SingleHotel from './componsent/Hotels/SingleHotel';
 
 
 // Import your components here
@@ -199,7 +199,7 @@ export default function MiniDrawer() {
             <Route path="/user" element={<User/>} />
             <Route path="/login" element={<LoginForm />} />
   <Route path="/register" element={<RegisterForm />} />
-  <Route path="/hotel" element={<singleHotel />} />
+  <Route path='/hotel/:id' element={<SingleHotel />} />
           </Routes>
         </Box>
       </Box>

@@ -1,4 +1,6 @@
 /* eslint-disable react/prop-types */
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+
 import { useState, useEffect, useMemo } from "react";
 import {
   MaterialReactTable,
@@ -20,6 +22,8 @@ import axios from "axios";
 
 const Hotels = () => {
   const [hotelList, setHotelList] = useState([]);
+ 
+  const Navegate=useNavigate();
   const [id, setId] = useState("");
   const [hotelData, setHotelData] = useState({
     name: "",
@@ -245,12 +249,9 @@ const Hotels = () => {
 
     renderRowActionMenuItems: (params) => [
       <MenuItem
-        key="View"
+        key="view"
         onClick={() => {
-         
-          setId(params.row.original._id)
-          setIsModalOpen(true);
-
+          Navegate(`/hotel/ ${params.row.original._id}`);
           params.closeMenu();
         }}
         sx={{ m: 0 }}
