@@ -12,8 +12,9 @@ import {
   Modal,
   TextField,
   Typography,
+
 } from "@mui/material";
-import { Edit, Delete } from "@mui/icons-material";
+import { Edit, Delete,Visibility } from "@mui/icons-material";
 // import { data } from "./HotelsData";
 import axios from "axios";
 
@@ -243,24 +244,22 @@ const Hotels = () => {
     ),
 
     renderRowActionMenuItems: (params) => [
-      // <MenuItem
-      //   key="View"
-      //   onClick={() => {
-      //     setHotelData(
-      //       hotelList.find((item) => item._id === params.row.original._id)
-      //     )
-      //     setId(params.row.original._id)
-      //     setIsModalOpen(true);
+      <MenuItem
+        key="View"
+        onClick={() => {
+         
+          setId(params.row.original._id)
+          setIsModalOpen(true);
 
-      //     params.closeMenu();
-      //   }}
-      //   sx={{ m: 0 }}
-      // >
-      //   <ListItemIcon>
-      //     <VisibilityIcon/>
-      //   </ListItemIcon>
-      //   View
-      // </MenuItem>,
+          params.closeMenu();
+        }}
+        sx={{ m: 0 }}
+      >
+        <ListItemIcon>
+          <Visibility/>
+        </ListItemIcon>
+        View
+      </MenuItem>,
       <MenuItem
         key="edit"
         onClick={() => {
