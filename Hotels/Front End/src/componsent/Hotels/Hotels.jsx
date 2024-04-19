@@ -1,6 +1,4 @@
 /* eslint-disable react/prop-types */
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-
 import { useState, useEffect, useMemo } from "react";
 import {
   MaterialReactTable,
@@ -14,16 +12,15 @@ import {
   Modal,
   TextField,
   Typography,
-
 } from "@mui/material";
-import { Edit, Delete,Visibility } from "@mui/icons-material";
+import { Edit, Delete, Visibility } from "@mui/icons-material";
 // import { data } from "./HotelsData";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Hotels = () => {
+  const Navigate = useNavigate();
   const [hotelList, setHotelList] = useState([]);
- 
-  const Navegate=useNavigate();
   const [id, setId] = useState("");
   const [hotelData, setHotelData] = useState({
     name: "",
@@ -251,13 +248,13 @@ const Hotels = () => {
       <MenuItem
         key="view"
         onClick={() => {
-          Navegate(`/hotel/ ${params.row.original._id}`);
+          Navigate(`/hotel/${params.row.original._id}`);
           params.closeMenu();
         }}
         sx={{ m: 0 }}
       >
         <ListItemIcon>
-          <Visibility/>
+          <Visibility />
         </ListItemIcon>
         View
       </MenuItem>,
@@ -266,8 +263,8 @@ const Hotels = () => {
         onClick={() => {
           setHotelData(
             hotelList.find((item) => item._id === params.row.original._id)
-          )
-          setId(params.row.original._id)
+          );
+          setId(params.row.original._id);
           setIsModalOpen(true);
 
           params.closeMenu();
