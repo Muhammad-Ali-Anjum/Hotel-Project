@@ -1,8 +1,8 @@
 import React from "react";
 import BoxSystemProps from "./Box";
-import "./SaleBox.css"; // Import the CSS file
+import "./Dashboard.css";
 
-function SaleBox() {
+const SaleBox = () => {
   const sales = [
     { id: { value: 1, name: "Room", sale: 400 } },
     { id: { value: 2, name: "Booking", sale: 5500 } },
@@ -10,15 +10,13 @@ function SaleBox() {
     { id: { value: 5, name: "available", sale: 30 } }
   ];
   return (
-    <>
-      <div className="sales-container">
-        {sales.map((sale) => (
-          <div key={sale.id.value} className="sale-item">
-            <BoxSystemProps sale={sale.id.sale} name={sale.id.name} />
-          </div>
-        ))}
-      </div>
-    </>
+    <div style={{ display: "flex", justifyContent: "space-between", marginLeft: 20 }}>
+      {sales.map((sale) => (
+        <div key={sale.id.value} style={{ marginLeft: 20 }}>
+          <BoxSystemProps sale={sale.id.sale} name={sale.id.name} />
+        </div>
+      ))}
+    </div>
   );
 }
 
