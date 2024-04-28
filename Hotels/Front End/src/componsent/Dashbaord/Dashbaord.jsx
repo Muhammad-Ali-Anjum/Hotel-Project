@@ -1,18 +1,24 @@
-import React from "react";
-import SimpleBarChart from "./Graph/BarChart";
+// import PieChart from './PieChart'
+import SimpleBarChart from "./Graph/BarChart ";
 import BasicPie from "./Graph/PieChart";
 import SaleBox from "./Graph/SaleBox";
-import "./Dashboard.css"; // Import the CSS file for Dashboard styling
-
 const Dashboard = () => {
   return (
     <>
-      <SaleBox />
-      <hr />
-      <div className="charts-container">
+      {/* <PieChart/> */}
+      <SaleBox/>
+        <hr />
+      <dev style={{
+        display: "flex",
+        justifyContent: "space-between",
+        marginLeft: 20,
+        width:1000
+      }}>
+
+        
         <SimpleBarChart />
         <BasicPie />
-      </div>
+      </dev>
     </>
   );
 };

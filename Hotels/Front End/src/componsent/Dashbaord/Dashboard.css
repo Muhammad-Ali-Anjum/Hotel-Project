@@ -11,6 +11,7 @@
     .charts-container {
       flex-direction: column; /* Stack charts vertically on small screens */
       align-items: center; /* Center align charts on small screens */
+      width: 100%;
     }
   }
   

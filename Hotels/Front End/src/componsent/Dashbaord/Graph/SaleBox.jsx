@@ -1,6 +1,6 @@
 import React from "react";
 import BoxSystemProps from "./Box";
-import "./Dashboard.css";
+import "./SaleBox.css";
 
 const SaleBox = () => {
   const sales = [
