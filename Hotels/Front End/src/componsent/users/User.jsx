@@ -1,83 +1,168 @@
-import React, { useState } from 'react';
-import { useMemo } from 'react';
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
-import { Box, ListItemIcon, MenuItem, Button, Modal, TextField, Typography, IconButton, RadioGroup, Radio, FormControlLabel } from '@mui/material';
-import { Edit, Delete, Close } from '@mui/icons-material';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { data } from './usersData';
+/* eslint-disable react/prop-types */
+import { useState, useEffect, useMemo } from "react";
+import SingleUser from "./SingleUser";
+
+import {  FormControlLabel } from "@mui/material";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
+import {
+  Box,
+  ListItemIcon,
+  MenuItem,
+  Button,
+  Modal,
+  TextField,
+  Typography,
+  Checkbox,
+} from "@mui/material";
+import { Edit, Delete, Visibility } from "@mui/icons-material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const User = () => {
-  const [open, setOpen] = useState(false);
+  const Navigate = useNavigate();
+  const [userList, setuserList] = useState([]);
+  const [id, setId] = useState("");
+  const [userData, setuserData] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    email: "",
+    isAdmin: true,
+  });
 
-  const handleOpen = () => {
-    setOpen(true);
+  const resetForm = () => {
+    setuserData({
+      firstName: "",
+      lastName: "",
+      username: "",
+      email: "",
+      isAdmin: true,
+    });
+  };
+  const handleChange = (event) => {
+    const { name, value, type } = event.target;
+    const newValue = type === "checkbox" ? event.target.checked : value;
+    setuserData({ ...userData, [name]: newValue });
+  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+  };
+  const fetchuserData = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/users");
+      console.log(response.data)
+      setuserList(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleModalClose = async () => {
+    if (id === "") {
+      await axios.post("http://localhost:8000/api/users/", userData);
+    } else {
+      await handleUpdate(id); // Call handleUpdate directly
+    }
+    resetForm();
+    setId(""); // Reset id after handling the update or insert
+    setIsModalOpen(false);
   };
+
+  const handleUpdate = async (id) => {
+    try {
+      console.log("id", id);
+  
+      await axios.put(`http://localhost:8000/api/users/${id}`, userData);
+      // Reset form and close modal after successful update
+      resetForm();
+      setId("");
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
+  };
+
+  let handleDelete = async (id) => {
+    // console.log("id", id);
+    try {
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete the data?"
+      );
+      if (confirmDelete) {
+        await axios.delete(`http://localhost:8000/api/users/${id}`);
+        console.log("done delete");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchuserData();
+  }, []);
 
   const columns = useMemo(
     () => [
       {
-        id: 'users',
-        header: 'Users',
+        id: "Users-Identities",
+        header: "Users-Identities",
         columns: [
           {
-            accessorFn: (row) => `${row.firstName} ${row.lastName}`,
-            id: 'name',
-            header: 'Name',
+            accessorKey:"firstName",
+           
+            id: "firstName",
+          
+            header: "firstName",
             size: 200,
             Cell: ({ renderedCellValue, row }) => (
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem',
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "1rem",
                 }}
               >
                 <img
                   alt="avatar"
-                  height={30}
-                  src={row.original.avatar}
+                  height={50}
+                  src={row.original.photos[0]}
                   loading="lazy"
-                  style={{ borderRadius: '50%' }}
+                  style={{ border: "2px solid teal", borderRadius: "5px" }}
                 />
                 <span>{renderedCellValue}</span>
               </Box>
             ),
           },
+          // {
+          //   accessorKey: "firstName",
+          //   header: "firstName",
+          //   size: 150,
+          // },
           {
-            accessorKey: 'username',
-            header: 'Username',
-            size: 200,
+            accessorKey: "lastName",
+            header: "lastName",
+            size: 150,
           },
           {
-            accessorKey: 'email',
-            enableClickToCopy: true,
-            filterVariant: 'autocomplete',
-            header: 'Email',
-            size: 300,
+            accessorKey: "username",
+            header: "username",
+            size: 150,
           },
           {
-            accessorKey: 'isAdmin',
-            header: 'Is Admin',
-            size: 50,
-            Cell: ({ cell }) => (
-              <Box
-                component="span"
-                sx={(theme) => ({
-                  backgroundColor: cell.getValue() ? theme.palette.success.main : theme.palette.error.main,
-                  color: '#fff',
-                  borderRadius: '0.25rem',
-                  padding: '0.25rem',
-                  fontWeight: 'bold',
-                })}
-              >
-                {cell.getValue() ? 'Yes' : 'No'}
-              </Box>
-            ),
+            accessorKey: "email",
+            header: "email",
+            size: 150,
+          },
+          {
+            accessorFn: (row) => row.isAdmin ? "Yes" : "No",
+            id: "isAdmin",
+            header: "Is Admin",
+            size: 150,
           },
         ],
       },
@@ -87,7 +172,7 @@ const User = () => {
 
   const table = useMaterialReactTable({
     columns,
-    data,
+    data: userList,
     enableColumnFilterModes: true,
     enableColumnOrdering: true,
     enableGrouping: true,
@@ -95,53 +180,82 @@ const User = () => {
     enableFacetedValues: true,
     enableRowActions: true,
     enableRowSelection: true,
+    getRowId: (row) => row.id,
     initialState: {
       showColumnFilters: false,
       showGlobalFilter: true,
       columnPinning: {
-        left: ['mrt-row-expand', 'mrt-row-select'],
-        right: ['mrt-row-actions'],
+        left: ["mrt-row-expand", "mrt-row-select"],
+        right: ["mrt-row-actions"],
       },
     },
-    paginationDisplayMode: 'pages',
-    positionToolbarAlertBanner: 'bottom',
+    paginationDisplayMode: "pages",
+    positionToolbarAlertBanner: "bottom",
     muiSearchTextFieldProps: {
-      size: 'small',
-      variant: 'outlined',
+      size: "small",
+      variant: "outlined",
     },
     muiPaginationProps: {
-      color: 'secondary',
+      color: "secondary",
       rowsPerPageOptions: [5, 10, 15, 20, 25, 30],
-      shape: 'rounded',
-      variant: 'outlined',
+      shape: "rounded",
+      variant: "outlined",
     },
     renderDetailPanel: ({ row }) => (
       <Box
         sx={{
-          alignItems: 'center',
-          display: 'flex',
-          justifyContent: 'space-around',
-          left: '30px',
-          maxWidth: '1000px',
-          position: 'sticky',
-          width: '100%',
+          alignItems: "center",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          padding: "16px",
+          textAlign: "center",
+          maxWidth: "100%",
         }}
       >
         <img
           alt="avatar"
-          height={200}
-          src={row.original.avatar}
+          src={row.original.photos[0]}
           loading="lazy"
-          style={{ borderRadius: '50%' }}
+          style={{
+            maxWidth: "100%",
+            height: "auto",
+            border: "2px solid teal",
+            borderRadius: "5px",
+            marginBottom: "16px",
+          }}
         />
+        <Typography variant="h5" sx={{ marginBottom: "8px" }}>
+          {row.original.title}
+        </Typography>
+        <Typography variant="body1">{row.original.desc}</Typography>
       </Box>
     ),
-    renderRowActionMenuItems: ({ closeMenu, table }) => [
+
+    renderRowActionMenuItems: (params) => [
+      <MenuItem
+        key="view"
+        onClick={() => {
+          Navigate(`/user/${params.row.original._id}`);
+          params.closeMenu();
+        }}
+        sx={{ m: 0 }}
+      >
+        <ListItemIcon>
+          <Visibility />
+        </ListItemIcon>
+        View
+      </MenuItem>,
       <MenuItem
         key="edit"
         onClick={() => {
-          // Edit logic...
-          closeMenu();
+          setuserData(
+            userList.find((item) => item._id === params.row.original._id)
+          );
+          setId(params.row.original._id);
+          setIsModalOpen(true);
+
+          params.closeMenu();
         }}
         sx={{ m: 0 }}
       >
@@ -153,9 +267,8 @@ const User = () => {
       <MenuItem
         key="delete"
         onClick={() => {
-          const selectedRows = table.getSelectedRowModel().flatRows;
-          selectedRows.forEach((row) => table.deleteRow(row.id));
-          closeMenu();
+          handleDelete(params.row.original._id);
+          params.closeMenu();
         }}
         sx={{ m: 0 }}
       >
@@ -167,126 +280,122 @@ const User = () => {
     ],
   });
 
-  const initialValues = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    avatar: '',
-    isAdmin: 'no',
-  };
-
-  const validationSchema = Yup.object().shape({
-    firstName: Yup.string().required('First Name is required'),
-    lastName: Yup.string().required('Last Name is required'),
-    email: Yup.string().email('Invalid email').required('Email is required'),
-    avatar: Yup.string().url('Invalid URL').required('Avatar URL is required'),
-    isAdmin: Yup.string().required('Please select Admin status'),
-  });
-
   return (
-    <Box position="relative">
-      <Button
-        variant="contained"
-        color="primary"
-        style={{ position: 'relative', top: 0, left: '86%', zIndex: 1 }}
-        onClick={handleOpen}
+    <>
+      <Box mb={2} textAlign="right">
+        {/* <Button variant="contained" color="primary" onClick={handleModalOpen}>
+          ADD NEW+
+        </Button> */}
+      </Box>
+      <MaterialReactTable table={table} />
+
+      {/* New Hotels Form */}
+      <Modal open={isModalOpen} onClose={handleModalClose}>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          bgcolor: "background.paper",
+          boxShadow: 24,
+          p: 4,
+          width: 400,
+          maxWidth: "90%",
+          maxHeight: "90%",
+          overflowY: "auto",
+        }}
       >
-        Create User
-      </Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="create-user-modal"
-        aria-describedby="create-user-modal-description"
-      >
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', bgcolor: 'background.paper', boxShadow: 24, p: 4, maxWidth: '90%' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <IconButton onClick={handleClose} aria-label="close">
-              <Close />
-            </IconButton>
-          </Box>
-          <Typography variant="h5" component="div" gutterBottom>
-            Create User
-          </Typography>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={(values, { resetForm }) => {
-              console.log(values);
-              resetForm();
-              handleClose();
+        <form>
+          <Typography variant="h5">Update User</Typography>
+          <TextField
+            variant="standard"
+            label="firstName"
+            fullWidth
+            margin="normal"
+            name="firstName"
+            value={userData.firstName}
+            onChange={handleChange}
+          />
+            <TextField
+            variant="standard"
+            label="lastName"
+            fullWidth
+            margin="normal"
+            name="lastName"
+            value={userData.lastName}
+            onChange={handleChange}
+          />
+            <TextField
+            variant="standard"
+            label="username"
+            fullWidth
+            margin="normal"
+            name="username"
+            value={userData.username}
+            onChange={handleChange}
+          />
+            <TextField
+            variant="standard"
+            label="Email"
+            fullWidth
+            margin="normal"
+            name="email"
+            value={userData.email}
+            onChange={handleChange}
+          />
+          <FormControlLabel
+              control={
+                <Checkbox
+                  checked={userData.isAdmin}
+                  onChange={handleChange}
+                  name="isAdmin"
+                />
+              }
+              label="Yes"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={!userData.isAdmin}
+                  onChange={(e) => handleChange({ ...e, target: { name: "isAdmin", value: !userData.isAdmin } })}
+                  name="isAdmin"
+                />
+              }
+              label="No"
+            />
+          {/* Other TextField components */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "1rem",
             }}
           >
-            {({ errors, touched }) => (
-              <Form>
-                <Field
-                  name="firstName"
-                  as={TextField}
-                  label="First Name"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.firstName && !!errors.firstName}
-                  helperText={touched.firstName && errors.firstName}
-                />
-                <Field
-                  name="lastName"
-                  as={TextField}
-                  label="Last Name"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.lastName && !!errors.lastName}
-                  helperText={touched.lastName && errors.lastName}
-                />
-                <Field
-                  name="email"
-                  as={TextField}
-                  label="Email"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.email && !!errors.email}
-                  helperText={touched.email && errors.email}
-                />
-                <Field
-                  name="avatar"
-                  as={TextField}
-                  label="Avatar"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={touched.avatar && !!errors.avatar}
-                  helperText={touched.avatar && errors.avatar}
-                />
-
-                  <Typography >IsAdmin</Typography>
-                <Field name="isAdmin">
-                  {({ field }) => (
-                   <RadioGroup
-                      {...field}
-                      row
-                     
-                      aria-label="isAdmin"
-                      name="isAdmin"
-                      error={touched.isAdmin && !!errors.isAdmin}
-                    >
-                      <FormControlLabel value="yes" control={<Radio />} label="Yes" />
-                      <FormControlLabel value="no" control={<Radio />} label="No" />
-                    </RadioGroup>
-                  )}
-                </Field>
-                <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-                  Create User
-                </Button>
-              </Form>
-            )}
-          </Formik>
-        </Box>
-      </Modal>
-      <MaterialReactTable table={table} />
-    </Box>
-  );
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => {
+                resetForm();
+                setIsModalOpen(false);
+              }}
+            >
+              Close
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleModalClose}
+            >
+              {id === "" ? "Add Hotel" : "Update User"}
+            </Button>
+          </Box>
+        </form>
+      </Box>
+    </Modal>
+  </>
+);
 };
 
 export default User;
