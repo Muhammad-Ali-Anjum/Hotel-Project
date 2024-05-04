@@ -74,15 +74,13 @@ const Room = () => {
         // Make a POST request to create a new room
         await axios.post(`http://localhost:8000/api/room/${hotelId}`, dataWithHotelId);
         
-        // Reset the form fields and close the modal
              resetForm();
         setIsModalOpen(false);
       } catch (error) {
-        // Handle any errors that occur during the POST request
         console.error("Error creating new room:", error);
       }
     } else {
-      // If id is not empty, it means we are updating an existing room
+     
       handleUpdate(id);
     }
   };
