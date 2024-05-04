@@ -106,7 +106,6 @@ const Room = () => {
     try {
       const confirmDelete = window.confirm("Are you sure you want to delete the room?");
       if (confirmDelete) {
-        // Send DELETE request to delete the room
         await axios.delete(`http://localhost:8000/api/room/${id}/${hotelId}`);
         console.log("Room with ID", id, "in hotel with ID", hotelId, "deleted successfully.");
         
