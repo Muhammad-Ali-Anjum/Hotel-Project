@@ -114,7 +114,6 @@ const Room = () => {
         setroomList(prevRoomList => prevRoomList.filter(room => room._id !== id));
       }
     } catch (error) {
-      // Log any errors that occur during the delete request
       console.error("Error deleting room:", error);
     }
   };
